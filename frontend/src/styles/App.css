@@ -40,7 +40,6 @@ body {
   .editor-container,
   .preview-container {
     height: 50vh;
-    width: 100%;
   }
 }
 
