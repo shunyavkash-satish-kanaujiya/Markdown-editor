@@ -21,7 +21,7 @@ const Editor = ({ code, setCode, language, setLanguage }) => {
   const options = {
     selectOnLineNumbers: true,
     automaticLayout: true,
-    minimap: { enabled: false },
+    minimap: { enabled: true },
   };
 
   useEffect(() => {
