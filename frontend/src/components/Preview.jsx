@@ -10,46 +10,27 @@ const Preview = ({ code, language }) => {
 
   const handlePreview = async () => {
     try {
-      // Save code to MongoDB
       await axios.post("http://localhost:5000/api/code/save", {
         language,
         code,
       });
-
-      // Fetch the saved code and execute it
       const response = await axios.get(
         `http://localhost:5000/api/code/get/${language}`
       );
-
-      if (response.data.code) {
-        executeCode(response.data.code);
-      } else {
-        setOutput("No code found.");
-      }
+      setOutput(
+        response.data.code ? processCode(response.data.code) : "No code found."
+      );
     } catch (error) {
-      console.error("Error processing code:", error);
-      setOutput("Error processing code.");
+      setOutput("Error processing code.", error);
     }
   };
 
-  const executeCode = (savedCode) => {
-    switch (language) {
-      case "javascript":
-        executeJavaScript(savedCode);
-        break;
-      case "html":
-        setOutput(savedCode);
-        break;
-      case "css":
-        applyCSS(savedCode);
-        setOutput("CSS applied!");
-        break;
-      case "markdown":
-        renderMarkdown(savedCode);
-        break;
-      default:
-        setOutput("Unsupported language");
-    }
+  const processCode = (savedCode) => {
+    if (language === "javascript") return executeJavaScript(savedCode);
+    if (language === "html") return savedCode;
+    if (language === "css") return applyCSS(savedCode);
+    if (language === "markdown") return renderMarkdown(savedCode);
+    return "Unsupported language";
   };
 
   const executeJavaScript = (jsCode) => {
@@ -60,7 +41,7 @@ const Preview = ({ code, language }) => {
       const wrappedCode = `
       (function() {
         const originalLog = console.log;
-        console.log = customLog;
+        console.log = (...args) => customLog(args.join(" "));
         try {
           ${jsCode}
         } catch (err) {
@@ -70,39 +51,30 @@ const Preview = ({ code, language }) => {
       })();
     `;
 
-      setTimeout(() => {
-        new Function("customLog", wrappedCode)(customLog);
-        setOutput(logs.join("\n") || "No output");
-      }, 100); // Adding slight delay
+      new Function("customLog", wrappedCode)(customLog); // Passing customLog as an argument
+      return logs.join("\n") || "No output";
     } catch (error) {
-      setOutput(`Error: ${error.message}`);
+      return `Error: ${error.message}`;
     }
   };
 
   const applyCSS = (cssCode) => {
-    let styleElement = document.getElementById("dynamic-style");
-    if (!styleElement) {
-      styleElement = document.createElement("style");
-      styleElement.id = "dynamic-style";
-      document.head.appendChild(styleElement);
-    }
-    styleElement.innerHTML = ""; // Clear previous styles
-    styleElement.innerHTML = cssCode; // Apply new styles
+    let styleElement =
+      document.getElementById("dynamic-style") ||
+      document.createElement("style");
+    styleElement.id = "dynamic-style";
+    document.head.appendChild(styleElement);
+    styleElement.innerHTML = cssCode;
+    return "CSS applied!";
   };
 
-  const renderMarkdown = (mdCode) => {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-    });
-
-    const rawHtml = marked.parse(mdCode);
-    setOutput(DOMPurify.sanitize(rawHtml));
-  };
+  const renderMarkdown = (mdCode) => DOMPurify.sanitize(marked.parse(mdCode));
 
   return (
     <div className="preview-container">
-      <button onClick={handlePreview}>Preview</button>
+      <button onClick={handlePreview} className="preview-btn">
+        Preview
+      </button>
       <div className="preview-content">
         <h3>Output:</h3>
         {language === "html" ? (

@@ -23,7 +23,21 @@
   background: #ffffff;
   border-radius: 0 0 8px 8px;
 }
-
+.preview-btn {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  width: 40%;
+  border-radius: 10px;
+  border: 2px solid black;
+  transition: all 0.1s ease-in-out;
+}
+.preview-btn:hover {
+  background-color: transparent;
+  color: #000;
+}
 /* GitHub-Style Markdown */
 .markdown-preview {
   font-family: "Arial", sans-serif;
