@@ -8,7 +8,16 @@ const app = express();
 connectDB();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://shunyavkash-satish-kanaujiya.github.io",
+      "https://shunyavkash-satish-kanaujiya.github.io/Markdown-editor/",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
 app.use("/api/code", codeRoutes);
 
