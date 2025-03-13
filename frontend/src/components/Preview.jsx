@@ -10,12 +10,15 @@ const Preview = ({ code, language }) => {
 
   const handlePreview = async () => {
     try {
-      await axios.post("http://localhost:5000/api/code/save", {
-        language,
-        code,
-      });
+      await axios.post(
+        "https://markdown-editor-yb16.onrender.com/api/code/save",
+        {
+          language,
+          code,
+        }
+      );
       const response = await axios.get(
-        `http://localhost:5000/api/code/get/${language}`
+        `https://markdown-editor-yb16.onrender.com/api/code/get/${language}`
       );
       setOutput(
         response.data.code ? processCode(response.data.code) : "No code found."
