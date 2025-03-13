@@ -32,14 +32,14 @@ body {
 /* Responsive Design */
 @media screen and (max-width: 1024px) {
   .editor-preview-container {
-    flex-direction: column; /* Stack editor and preview vertically */
+    flex-direction: column;
     padding: 10px;
     gap: 10px;
   }
 
   .editor-container,
   .preview-container {
-    height: 50vh; /* Adjust height for better visibility */
+    height: 50vh;
     width: 100%;
   }
 }
